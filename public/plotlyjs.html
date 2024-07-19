@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Plotly.js Scatter Plot Example</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+  </head>
+  <body>
+    <button id="update-button">Update Points</button>
+    <div id="scatter-plot" style="width: 100%; height: 90vh"></div>
+    <script>
+      // 初期設定
+      const numPoints = 100000;
+      let x = Array.from({ length: numPoints }, () => Math.random());
+      let y = Array.from({ length: numPoints }, () => Math.random());
+
+      // データセットを作成
+      const data = [
+        {
+          x: x,
+          y: y,
+          mode: "markers",
+          type: "scatter",
+          marker: {
+            size: 1,
+            color: "rgba(0, 0, 255, 1)",
+          },
+        },
+      ];
+
+      // レイアウト設定
+      const layout = {
+        title: "100,000 Points Scatter Plot",
+        hovermode: "closest",
+      };
+
+      // プロット作成
+      Plotly.newPlot("scatter-plot", data, layout);
+
+      // マウスオーバーイベントで座標を表示
+      const plotElement = document.getElementById("scatter-plot");
+      plotElement.on("plotly_hover", function (data) {
+        const infotext = data.points.map(function (d) {
+          return "(" + d.x + ", " + d.y + ")";
+        });
+
+        plotElement.querySelector(".hovertext").innerText = infotext;
+      });
+
+      // ボタンクリックイベントでランダムに更新
+      document.getElementById("update-button").addEventListener("click", () => {
+        x = Array.from({ length: numPoints }, () => Math.random());
+        y = Array.from({ length: numPoints }, () => Math.random());
+
+        Plotly.update("scatter-plot", {
+          x: [x],
+          y: [y],
+        });
+      });
+    </script>
+  </body>
+</html>

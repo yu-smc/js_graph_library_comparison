@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Chart.js Scatter Plot Example</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  </head>
+  <body>
+    <button id="update-button">Update Points</button>
+    <canvas id="scatter-plot" style="width: 100%; height: 90vh"></canvas>
+    <script>
+      // 50,000個のランダムな点群を生成する関数
+      function generateRandomData(numPoints) {
+        const data = [];
+        for (let i = 0; i < numPoints; i++) {
+          data.push({
+            x: Math.random(),
+            y: Math.random(),
+          });
+        }
+        return data;
+      }
+
+      const numPoints = 100000;
+      let scatterData = generateRandomData(numPoints);
+
+      // Chart.jsでプロットを作成
+      const ctx = document.getElementById("scatter-plot").getContext("2d");
+      const scatterChart = new Chart(ctx, {
+        type: "scatter",
+        data: {
+          datasets: [
+            {
+              label: "Scatter Dataset",
+              data: scatterData,
+              pointRadius: 1,
+              backgroundColor: "rgba(0, 0, 255, 1)",
+            },
+          ],
+        },
+        options: {
+          responsive: true,
+          scales: {
+            x: {
+              type: "linear",
+              position: "bottom",
+            },
+            y: {
+              type: "linear",
+            },
+          },
+          plugins: {
+            tooltip: {
+              callbacks: {
+                label: function (context) {
+                  return (
+                    "(" +
+                    context.raw.x.toFixed(3) +
+                    ", " +
+                    context.raw.y.toFixed(3) +
+                    ")"
+                  );
+                },
+              },
+            },
+          },
+        },
+      });
+
+      // ボタンクリックイベントでランダムに更新
+      document.getElementById("update-button").addEventListener("click", () => {
+        scatterData = generateRandomData(numPoints);
+        scatterChart.data.datasets[0].data = scatterData;
+        scatterChart.update();
+      });
+    </script>
+  </body>
+</html>

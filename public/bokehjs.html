@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>BokehJS Scatter Plot Example</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.bokeh.org/bokeh/release/bokeh-3.0.3.min.css"
+      type="text/css"
+    />
+    <script
+      type="text/javascript"
+      src="https://cdn.bokeh.org/bokeh/release/bokeh-3.5.0.min.js"
+    ></script>
+    <script
+      type="text/javascript"
+      src="https://cdn.bokeh.org/bokeh/release/bokeh-gl-3.5.0.min.js"
+    ></script>
+    <script
+      type="text/javascript"
+      src="https://cdn.bokeh.org/bokeh/release/bokeh-widgets-3.5.0.min.js"
+    ></script>
+    <script
+      type="text/javascript"
+      src="https://cdn.bokeh.org/bokeh/release/bokeh-tables-3.5.0.min.js"
+    ></script>
+    <script
+      type="text/javascript"
+      src="https://cdn.bokeh.org/bokeh/release/bokeh-mathjax-3.5.0.min.js"
+    ></script>
+    <script
+      type="text/javascript"
+      src="https://cdn.bokeh.org/bokeh/release/bokeh-api-3.5.0.min.js"
+    ></script>
+    <script type="text/javascript">
+      document.addEventListener("DOMContentLoaded", function () {
+        const plt = Bokeh.Plotting;
+        // データを生成
+        const N = 100000;
+        const x = [];
+        const y = [];
+        const colors = [];
+        const radii = [];
+        for (let i = 0; i < N; i++) {
+          x.push(Math.random() * 100);
+          y.push(Math.random() * 100);
+          colors.push(plt.color([0, 0, 255]));
+          radii.push(0.1);
+        }
+
+        // Bokeh用のデータソースを作成
+        const source = new Bokeh.ColumnDataSource({
+          data: { x: x, y: y, radius: radii, colors: colors },
+        });
+
+        // プロットを作成
+        const plot = plt.figure({
+          title: "Scatter Plot of 50,000 Points",
+          x_axis_label: "X-Axis",
+          y_axis_label: "Y-Axis",
+          width: 800,
+          height: 800,
+        });
+
+        // 点群を追加
+        plot.circle(
+          { field: "x" },
+          { field: "y" },
+          { field: "radius" },
+          {
+            source: source,
+          }
+        );
+        // レンダリング
+        plt.show(plot, document.getElementById("plot"));
+
+        document.getElementById("paint").addEventListener("click", () => {
+          for (let i = 0; i < N; i++) {
+            x[i] = Math.random() * 100;
+            y[i] = Math.random() * 100;
+          }
+          source.change.emit();
+        });
+      });
+    </script>
+  </head>
+  <body>
+    <div id="plot"></div>
+    <button id="paint">Paint</button>
+  </body>
+</html>
